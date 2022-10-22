@@ -1,0 +1,26 @@
+{
+  "name": "alycia_sportradar_challenge",
+  "version": "1.0.0",
+  "description": "sportradar advanced challenge",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alycia Wang",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.1.3",
+    "bree": "^9.1.2",
+    "express": "^4.18.2",
+    "jest": "^29.2.1",
+    "lodash": "^4.17.21",
+    "pg": "^8.8.0",
+    "request": "^2.88.2",
+    "sequelize": "^6.25.3",
+    "sequelize-cli": "^6.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

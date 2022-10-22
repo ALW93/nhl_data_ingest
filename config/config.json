@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "alycia",
+    "password": "password",
+    "database": "sportradar_nhl",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
