@@ -24,7 +24,7 @@ module.exports = {
           allowNull: false,
           references: {
             model: "Players",
-            key: "id",
+            key: "externalId",
             as: "playerId",
           },
         },

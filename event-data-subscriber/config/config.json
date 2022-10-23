@@ -1,4 +1,5 @@
 {
+  "api_url": "https://statsapi.web.nhl.com/api/v1",
   "development": {
     "username": "alycia",
     "password": "password",

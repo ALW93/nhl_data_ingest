@@ -1,7 +1,6 @@
-const { sequelize, Team, Player } = require("./db/models");
 const redis = require("redis");
 
-const eventHandler = require("./services/event-handler");
+const EventHandler = require("./services/event-handler");
 
 (async () => {
   const client = redis.createClient();
@@ -10,7 +9,7 @@ const eventHandler = require("./services/event-handler");
   await subscriber.connect();
 
   await subscriber.subscribe("events", (message) => {
-    const events = JSON.parse(message);
-    eventHandler.handle(events);
+    const event = JSON.parse(message);
+    new EventHandler(event.gameId).handle(event.events);
   });
 })();
