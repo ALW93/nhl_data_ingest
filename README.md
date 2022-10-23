@@ -1,8 +1,9 @@
 
 ### Database
 ![database schema](https://i.ibb.co/KLkPTNw/db-diagram.png)
-- For simplicity's sake, allowed numbers and positions to remain tied to the player table.
+- For simplicity's sake, allowed numbers and positions to remain tied to the player table. (not taking player trades into consideration)
 - event.game_id will not reference an additional game table and will refer to the external `gamePk` from the API. 
+- 
 
 
 ### Resources
