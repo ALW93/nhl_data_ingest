@@ -1,5 +1,5 @@
 {
-  "name": "sub",
+  "name": "pub",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -12,5 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "redis": "^4.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }

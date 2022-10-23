@@ -4,7 +4,7 @@
   "description": "sportradar advanced challenge",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alycia Wang",
@@ -18,7 +18,8 @@
     "pg": "^8.8.0",
     "request": "^2.88.2",
     "sequelize": "^6.25.3",
-    "sequelize-cli": "^6.5.1"
+    "sequelize-cli": "^6.5.1",
+    "redis": "^4.3.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

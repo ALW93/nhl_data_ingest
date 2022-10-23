@@ -47,7 +47,7 @@ const publisher = redis.createClient();
     },
     team: {
       id: 10,
-      name: "Toronto Maple Leafs",
+      name: "Toronto Maple Leafssss",
       link: "/api/v1/teams/10",
       triCode: "TOR",
     },
@@ -55,5 +55,7 @@ const publisher = redis.createClient();
 
   await publisher.connect();
 
-  await publisher.publish("article", JSON.stringify(article));
+  setInterval(async () => {
+    await publisher.publish("article", JSON.stringify(article));
+  }, 2000);
 })();
