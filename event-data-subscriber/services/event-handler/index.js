@@ -1,4 +1,4 @@
-const livePlays = require("../../data/sample_live_plays.json");
+const livePlays = require("../data/sample_live_plays.json");
 
 const EVENT_TYPES = { GOAL: "GOAL", HIT: "HIT" };
 
