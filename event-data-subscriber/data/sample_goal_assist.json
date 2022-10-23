@@ -1,0 +1,76 @@
+{
+    "players": [
+        {
+            "player": {
+                "id": 8482055,
+                "fullName": "Drew O'Connor",
+                "link": "/api/v1/people/8482055"
+            },
+            "playerType": "Scorer",
+            "seasonTotal": 2
+        },
+        {
+            "player": {
+                "id": 8477969,
+                "fullName": "Marcus Pettersson",
+                "link": "/api/v1/people/8477969"
+            },
+            "playerType": "Assist",
+            "seasonTotal": 2
+        },
+        {
+            "player": {
+                "id": 8478017,
+                "fullName": "Mark Friedman",
+                "link": "/api/v1/people/8478017"
+            },
+            "playerType": "Assist",
+            "seasonTotal": 2
+        },
+        {
+            "player": {
+                "id": 8475789,
+                "fullName": "Jack Campbell",
+                "link": "/api/v1/people/8475789"
+            },
+            "playerType": "Goalie"
+        }
+    ],
+    "result": {
+        "event": "Goal",
+        "eventCode": "PIT88",
+        "eventTypeId": "GOAL",
+        "description": "Drew O'Connor (2) Deflected, assists: Marcus Pettersson (2), Mark Friedman (2)",
+        "secondaryType": "Deflected",
+        "strength": {
+            "code": "EVEN",
+            "name": "Even"
+        },
+        "gameWinningGoal": false,
+        "emptyNet": false
+    },
+    "about": {
+        "eventIdx": 72,
+        "eventId": 88,
+        "period": 1,
+        "periodType": "REGULAR",
+        "ordinalNum": "1st",
+        "periodTime": "11:53",
+        "periodTimeRemaining": "08:07",
+        "dateTime": "2021-10-23T23:37:18Z",
+        "goals": {
+            "away": 0,
+            "home": 1
+        }
+    },
+    "coordinates": {
+        "x": 78,
+        "y": 4
+    },
+    "team": {
+        "id": 5,
+        "name": "Pittsburgh Penguins",
+        "link": "/api/v1/teams/5",
+        "triCode": "PIT"
+    }
+},

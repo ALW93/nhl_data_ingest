@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   Event.init(
     {
       gameId: DataTypes.INTEGER,
+      eventId: DataTypes.INTEGER,
       playerId: DataTypes.INTEGER,
       type: DataTypes.STRING,
       value: DataTypes.INTEGER,
