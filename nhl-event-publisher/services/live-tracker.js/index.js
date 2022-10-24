@@ -1,5 +1,7 @@
 const axios = require("axios");
 
+const UPDATE_INTERVAL = 60000;
+
 class LiveTracker {
   constructor(gameId, publisher) {
     this.gameId = gameId;
@@ -12,9 +14,8 @@ class LiveTracker {
 
     const runTracker = setInterval(async () => {
       const latestUpdate = await this.publisher.get(this.gameId.toString());
-      console.log(`Syncing latest update for gameId: ${this.gameId}`);
       this.syncProgress(latestUpdate);
-    }, 5000);
+    }, UPDATE_INTERVAL);
 
     this.tracker = runTracker;
   }
@@ -43,7 +44,9 @@ class LiveTracker {
       await this.publisher.set(this.gameId.toString(), latest.about.eventIdx);
 
       if (latest.result.eventTypeId === "GAME_OFFICIAL") {
-        console.log(`Game ${this.gameId} concluding -- terminating tracker`);
+        console.log(
+          `Game ${this.gameId} concluded -- terminating live updates`
+        );
         clearInterval(this.tracker);
         this.publisher.del(this.gameId.toString());
       }
