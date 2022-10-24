@@ -5,19 +5,19 @@ const { api_url } = require("../../config/config.json");
 
 class DatabaseSynchronizer {
   async syncEvent(event, playerId, gameId, type, value = 1) {
-    let player = await Player.findOne({
+    const player = await Player.findOne({
       where: { externalId: playerId },
     });
 
     if (!player) {
       console.log(`Syncing missing player: ${playerId}`);
-      player = await this.syncPlayer(playerId, event.team.id);
+      await this.syncPlayer(playerId, event.team.id);
     }
 
     const newEvent = Event.build({
       gameId: gameId,
       eventId: event.about.eventId,
-      playerId: player.externalId,
+      playerId: playerId,
       type: type,
       value: value,
       timestamp: event.about.dateTime,
@@ -26,7 +26,13 @@ class DatabaseSynchronizer {
     try {
       await this._write(newEvent);
     } catch (e) {
-      console.error(`Error importing event: ${JSON.stringify(event)}`, e.name);
+      if (e.name == "SequelizeUniqueConstraintError") {
+        console.error(
+          `Event ${event.about.eventId} already processed -- skipping`
+        );
+        return;
+      }
+      console.error(`Error importing event: ${event.about.id}`, e.name);
     }
     return newEvent;
   }
@@ -41,7 +47,7 @@ class DatabaseSynchronizer {
     return newTeam;
   }
 
-  async syncPlayer(playerId, teamId = null) {
+  async syncPlayer(playerId, teamId = 0) {
     const response = await axios.get(`${api_url}/people/${playerId}`);
     const player = response.data.people[0];
 
@@ -57,7 +63,10 @@ class DatabaseSynchronizer {
     try {
       await this._write(newPlayer);
     } catch (e) {
-      console.error(`Error importing playerId: ${player.id}`, e.name);
+      if (e.name == "SequelizeUniqueConstraintError") {
+        return;
+      }
+      console.error(`Error importing player: ${player.id}`, e.name);
     }
     return newPlayer;
   }

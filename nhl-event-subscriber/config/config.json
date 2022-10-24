@@ -2,9 +2,10 @@
   "api_url": "https://statsapi.web.nhl.com/api/v1",
   "development": {
     "username": "alycia",
-    "password": "password",
-    "database": "sportradar_nhl",
+    "password": "",
+    "database": "hockey",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   }
 }

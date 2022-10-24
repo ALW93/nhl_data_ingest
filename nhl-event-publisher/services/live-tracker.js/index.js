@@ -10,9 +10,15 @@ class LiveTracker {
   }
 
   async init() {
+    console.log(`Initializing live tracking for gameId: ${this.gameId}`);
     this.syncProgress();
 
     const runTracker = setInterval(async () => {
+      console.log(
+        `[${new Date().toISOString()}]Checking for updates for gameId: ${
+          this.gameId
+        }`
+      );
       const latestUpdate = await this.publisher.get(this.gameId.toString());
       this.syncProgress(latestUpdate);
     }, UPDATE_INTERVAL);
