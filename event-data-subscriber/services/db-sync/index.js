@@ -1,54 +1,53 @@
-const _ = require("lodash");
 const axios = require("axios");
 
 const { sequelize, Team, Player, Event } = require("../../db/models");
 const { api_url } = require("../../config/config.json");
 
 class DatabaseSynchronizer {
-  async syncEvent(event, gameId) {
-    const player = await Player.findOne({
-      where: { externalId: event.playerId },
+  async syncEvent(event, playerId, gameId, type, value = 1) {
+    let player = await Player.findOne({
+      where: { externalId: playerId },
     });
-    try {
-      console.log(player.id);
-    } catch (e) {
-      console.error(`\n ERROR FINDING: ${player} ${event.playerId}`);
+
+    if (!player) {
+      console.log(`Syncing missing player: ${playerId}`);
+      player = await this.syncPlayer(playerId, event.team.id);
     }
 
-    // const newEvent = Event.build({
-    //   gameId: gameId,
-    //   eventId: event.about.eventId,
-    //   playerId: player.id,
-    //   type: event.result.eventTypeId,
-    //   value: _.get(event, "value", 1),
-    //   timestamp: event.about.dateTime,
-    // });
+    const newEvent = Event.build({
+      gameId: gameId,
+      eventId: event.about.eventId,
+      playerId: player.externalId,
+      type: type,
+      value: value,
+      timestamp: event.about.dateTime,
+    });
 
-    // try {
-    //   this._write(newEvent);
-    // } catch (e) {
-    //   console.error(`Error importing event: ${JSON.stringify(event)}`, e);
-    // }
-    // return newEvent;
+    try {
+      await this._write(newEvent);
+    } catch (e) {
+      console.error(`Error importing event: ${JSON.stringify(event)}`, e);
+    }
+    return newEvent;
   }
 
   async syncTeam(team) {
     const newTeam = Team.build({ externalId: team.id, name: team.name });
     try {
-      this._write(newTeam);
+      await this._write(newTeam);
     } catch (e) {
       console.error(`Error importing team: ${team.name}`, e);
     }
     return newTeam;
   }
 
-  async syncPlayer(playerId) {
+  async syncPlayer(playerId, teamId = null) {
     const response = await axios.get(`${api_url}/people/${playerId}`);
     const player = response.data.people[0];
 
     const newPlayer = Player.build({
       externalId: player.id,
-      teamId: player.currentTeam.id,
+      teamId: teamId || player.currentTeam.id,
       number: player.primaryNumber,
       position: player.primaryPosition.type,
       name: player.fullName,
@@ -56,7 +55,7 @@ class DatabaseSynchronizer {
     });
 
     try {
-      this._write(newPlayer);
+      await this._write(newPlayer);
     } catch (e) {
       console.error(`Error importing playerId: ${player.id}`, e);
     }
