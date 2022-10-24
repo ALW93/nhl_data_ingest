@@ -1,4 +1,3 @@
-const livePlays = require("../../../data/sample_live_plays.json");
 const db = require("../db-sync");
 
 const EVENT_TYPES = {
@@ -14,7 +13,6 @@ class EventHandler {
   }
 
   handle(events) {
-    console.log(`Filtering ${events.length} incoming events.`);
     const filteredEvents = events.filter((event) =>
       EVENT_TYPES.hasOwnProperty(event.result.eventTypeId)
     );
@@ -30,7 +28,7 @@ class EventHandler {
           this._processGoal(event);
           break;
         case EVENT_TYPES.HIT:
-          //  this._processHit(event);
+          this._processHit(event);
           break;
         case EVENT_TYPES.PENALTY:
           this._processPenalty(event);
@@ -43,11 +41,11 @@ class EventHandler {
   }
 
   _processGoal(event) {
-    event.players.forEach((player) => {
+    event.players.forEach(async (player) => {
       if (player.playerType !== "Goalie") {
         const eventType =
           player.playerType == "Scorer" ? EVENT_TYPES.GOAL : EVENT_TYPES.ASSIST;
-        db.syncEvent(event, player.player.id, this.gameId, eventType);
+        await db.syncEvent(event, player.player.id, this.gameId, eventType);
       }
     });
   }
@@ -60,12 +58,17 @@ class EventHandler {
   }
 
   _processPenalty(event) {
-    //
+    const offender = event.players.find(
+      (player) => player.playerType == "PenaltyOn"
+    );
+    db.syncEvent(
+      event,
+      offender.player.id,
+      this.gameId,
+      EVENT_TYPES.PENALTY,
+      event.result.penaltyMinutes
+    );
   }
 }
-
-const eventHandler = new EventHandler(2021020071);
-
-eventHandler.handle(livePlays);
 
 module.exports = EventHandler;

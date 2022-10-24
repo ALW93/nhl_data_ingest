@@ -26,7 +26,7 @@ class DatabaseSynchronizer {
     try {
       await this._write(newEvent);
     } catch (e) {
-      console.error(`Error importing event: ${JSON.stringify(event)}`, e);
+      console.error(`Error importing event: ${JSON.stringify(event)}`, e.name);
     }
     return newEvent;
   }
@@ -36,7 +36,7 @@ class DatabaseSynchronizer {
     try {
       await this._write(newTeam);
     } catch (e) {
-      console.error(`Error importing team: ${team.name}`, e);
+      console.error(`Error importing team: ${team.name}`, e.name);
     }
     return newTeam;
   }
@@ -57,7 +57,7 @@ class DatabaseSynchronizer {
     try {
       await this._write(newPlayer);
     } catch (e) {
-      console.error(`Error importing playerId: ${player.id}`, e);
+      console.error(`Error importing playerId: ${player.id}`, e.name);
     }
     return newPlayer;
   }

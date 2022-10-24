@@ -1,63 +1,74 @@
 const redis = require("redis");
 const publisher = redis.createClient();
 
-(async () => {
-  const article = [
-    {
-      players: [
-        {
-          player: {
-            id: 8478483,
-            fullName: "Mitchell Marner",
-            link: "/api/v1/people/8478483",
-          },
-          playerType: "Hitter",
-        },
-        {
-          player: {
-            id: 8475208,
-            fullName: "Brian Dumoulin",
-            link: "/api/v1/people/8475208",
-          },
-          playerType: "Hittee",
-        },
-      ],
-      result: {
-        event: "Hit",
-        eventCode: "PIT8",
-        eventTypeId: "HIT",
-        description: "Mitchell Marner hit Brian Dumoulin",
-      },
-      about: {
-        eventIdx: 4,
-        eventId: 8,
-        period: 1,
-        periodType: "REGULAR",
-        ordinalNum: "1st",
-        periodTime: "00:06",
-        periodTimeRemaining: "19:54",
-        dateTime: "2021-10-23T23:15:41Z",
-        goals: {
-          away: 0,
-          home: 0,
-        },
-      },
-      coordinates: {
-        x: -16,
-        y: 40,
-      },
-      team: {
-        id: 10,
-        name: "Toronto Maple Leafssss",
-        link: "/api/v1/teams/10",
-        triCode: "TOR",
-      },
-    },
-  ];
+const axios = require("axios");
+const { format, parseISO } = require("date-fns");
 
+const { DateTime } = require("luxon");
+
+// const livePlays = require("../data/sample_live_plays.json");
+
+axios.defaults.baseURL = "https://statsapi.web.nhl.com/api/v1";
+
+(async () => {
   await publisher.connect();
 
-  setInterval(async () => {
-    await publisher.publish("events", JSON.stringify(article));
-  }, 2000);
+  //publisher.set("gameId", "timeLastUpdate");
+
+  // default check current schedule, also check process.env.SCHEDULE_DATE, BACKFILL
+
+  // await publisher.publish(
+  //   "update",
+  //   JSON.stringify({ gameId: 2021020071, events: [] })
+  // );
+  new LiveTracker(2022020091, publisher).init();
 })();
+
+class LiveTracker {
+  constructor(gameId, publisher) {
+    this.gameId = gameId;
+    this.publisher = publisher;
+    this.tracker;
+  }
+
+  async init() {
+    this._syncProgress();
+
+    const runTracker = setInterval(async () => {
+      const latestUpdate = await publisher.get(this.gameId.toString());
+      this._syncProgress(latestUpdate);
+    }, 5000);
+
+    this.tracker = runTracker;
+  }
+
+  async _syncProgress(lastIndex = 0) {
+    const response = await axios.get(`/game/${this.gameId}/feed/live`);
+    const allPlays = response.data.liveData.plays.allPlays;
+
+    if (lastIndex) {
+      const latestPlays = allPlays.slice(lastIndex);
+      return this._publishUpdate(latestPlays);
+    }
+
+    this._publishUpdate(allPlays);
+  }
+
+  async _publishUpdate(updates) {
+    if (updates.length) {
+      const latest = updates[updates.length - 1];
+
+      if (latest.result.eventTypeId === "GAME_OFFICIAL") {
+        console.log(`Game ${this.gameId} concluding -- terminating tracker`);
+        clearInterval(this.tracker);
+      }
+
+      await this.publisher.publish(
+        "update",
+        JSON.stringify({ gameId: this.gameId, events: updates })
+      );
+
+      await publisher.set(this.gameId.toString(), latest.about.eventIdx);
+    }
+  }
+}

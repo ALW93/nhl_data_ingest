@@ -8,8 +8,14 @@ const EventHandler = require("./services/event-handler");
 
   await subscriber.connect();
 
-  await subscriber.subscribe("events", (message) => {
-    const event = JSON.parse(message);
-    new EventHandler(event.gameId).handle(event.events);
+  await subscriber.subscribe("update", (message) => {
+    const update = JSON.parse(message);
+
+    console.log(
+      `Received ${update.events.length} update(s) for game: ${
+        update.gameId
+      } at ${new Date().toUTCString()}`
+    );
+    new EventHandler(update.gameId).handle(update.events);
   });
 })();
