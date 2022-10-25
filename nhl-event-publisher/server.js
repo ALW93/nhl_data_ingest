@@ -15,6 +15,7 @@ axios.defaults.baseURL = "https://statsapi.web.nhl.com/api/v1";
 
   async function syncSchedule() {
     console.log(`Syncing daily schedule for ${new Date()}`);
+    // example from README "/schedule?date=2022-10-12"
     const response = await axios.get("/schedule");
     const scheduledGames = response.data.dates[0].games;
 

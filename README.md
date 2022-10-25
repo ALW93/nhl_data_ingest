@@ -19,10 +19,12 @@ Two individual services were created and designed to function as a publisher & s
 #### Misc things
 - Database validation/unique constraints added to prevent duplication.
 - The `LiveTracker` is currently set to gather updates every minute.
+- There may be no live games depending on when you start the application -- if you want to test the data ingest ability feel free to adjust the publisher's request query to include a past date `?date=2022-10-12`! 
+  - 💡 This will fetch and backfill all game data from whichever date you've entered!
 
 ## How to use
 ### Requirements
-Node, Postgres, Redis, (optional) Redis-cli
+Node, Postgres, Redis, (optional) Redis-cli, Docker
 ### Initial Setup 
 
 - Ensure Redis is up and running
